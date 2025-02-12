@@ -18,16 +18,30 @@ function deleteLast() {
 
 // Function to calculate the result
 function calculateResult() {
+    const expression = display.value;
+
     try {
-        // Evaluate the expression in the display
-        const result = eval(display.value);
+        // Use a safe evaluator function
+        const result = safeEval(expression);
         display.value = result;
     } catch (error) {
-        // Handle errors (e.g., invalid expressions)
         display.value = 'Error';
     }
 }
 
+// Safe evaluator function
+function safeEval(expression) {
+    // Remove any characters that are not numbers, operators, or parentheses
+    const sanitizedExpression = expression.replace(/[^0-9+\-*/().]/g, '');
+
+    // Use Function constructor as a safer alternative (still not perfect, but better than eval)
+    // Note: This is for demonstration purposes. A full parser is recommended for production.
+    try {
+        return new Function(`return ${sanitizedExpression}`)();
+    } catch (error) {
+        throw new Error('Invalid expression');
+    }
+}
 // Optional: Add keyboard support
 document.addEventListener('keydown', (event) => {
     const key = event.key;
